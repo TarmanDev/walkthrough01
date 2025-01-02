@@ -1,16 +1,24 @@
 <mvc:View
     controllerName="ui5.walkthrough.controller.InvoiceList"
     xmlns="sap.m"
-    xmlns:core="sap.ui.core"
-    xmlns:mvc="sap.ui.core.mvc">
-    
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core">
+
     <List
-        id="invoiceList"   
+        id="invoiceList"
+        headerText="{i18n>invoiceListTitle}"
         class="sapUiResponsiveMargin"
         width="auto"
-        items="{invoice>/Invoices}">
-        
-        <headerToolbar>   
+        items="{
+            path: 'invoice>/Invoices',
+            sorter: {
+                path: 'ShipperName',   
+                group: true            
+            }
+        }">
+
+        <!-- Header Toolbar with SearchField -->
+        <headerToolbar>
             <Toolbar>
                 <Title text="{i18n>invoiceListTitle}"/>
                 <ToolbarSpacer/>
@@ -19,7 +27,8 @@
                     search=".onFilterInvoices"/>   
             </Toolbar>
         </headerToolbar>
-        
+
+        <!-- List Items -->
         <items>
             <ObjectListItem
                 title="{invoice>Quantity} x {invoice>ProductName}"
