@@ -34,10 +34,17 @@ sap.ui.define([
         },
 
         // ฟังก์ชันเมื่อผู้ใช้คลิกที่ ObjectListItem
-        onPress() {
-            // รับ Router จาก Component และทำการนำทางไปยังหน้า "detail"
+        onPress(oEvent) {
+            // รับ item ที่ถูกคลิก
+            const oItem = oEvent.getSource();
+            
+            // รับ Router จาก Component
             const oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo("detail");
+
+            // ทำการ navigate ไปยัง route "detail" พร้อมพารามิเตอร์ invoicePath
+            oRouter.navTo("detail", {
+                invoicePath: window.encodeURIComponent(oItem.getBindingContext("invoice").getPath().substr(1))
+            });
         }
     });
 });
