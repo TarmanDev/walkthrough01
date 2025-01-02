@@ -1,8 +1,9 @@
+
 <mvc:View
     controllerName="ui5.walkthrough.controller.InvoiceList"
     xmlns="sap.m"
-    xmlns:mvc="sap.ui.core.mvc"
-    xmlns:core="sap.ui.core">
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc">
 
     <List
         id="invoiceList"
@@ -10,31 +11,28 @@
         class="sapUiResponsiveMargin"
         width="auto"
         items="{
-            path: 'invoice>/Invoices',
-            sorter: {
-                path: 'ShipperName',   
-                group: true            
+            path : 'invoice>/Invoices',
+            sorter : {
+                path : 'ShipperName',
+                group : true
             }
         }">
 
-        <!-- Header Toolbar with SearchField -->
         <headerToolbar>
             <Toolbar>
-                <Title text="{i18n>invoiceListTitle}"/>
-                <ToolbarSpacer/>
-                <SearchField 
-                    width="50%" 
-                    search=".onFilterInvoices"/>   
+                <Title text="{i18n>invoiceListTitle}" />
+                <ToolbarSpacer />
+                <SearchField
+                    width="50%"
+                    search=".onFilterInvoices"/>
             </Toolbar>
         </headerToolbar>
-
-        <!-- List Items -->
         <items>
             <ObjectListItem
                 title="{invoice>Quantity} x {invoice>ProductName}"
                 number="{
                     parts: [
-                        'invoice>ExtendedPrice',
+                        'invoice>ExTendedPrice',
                         'view>/currency'
                     ],
                     type: 'sap.ui.model.type.Currency',
@@ -44,7 +42,6 @@
                 }"
                 numberUnit="{view>/currency}"
                 numberState="{= ${invoice>ExtendedPrice} > 50 ? 'Error' : 'Success' }">
-                
                 <firstStatus>
                     <ObjectStatus
                         core:require="{
