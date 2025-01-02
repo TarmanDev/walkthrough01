@@ -1,32 +1,43 @@
-
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
-	"sap/ui/model/json/JSONModel",
-	"sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator"
-], (Controller, JSONModel, Filter, FilterOperator) => {
-	"use strict";
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/model/json/JSONModel",
+    "../model/formatter",  // สมมุติว่า formatter ถูกต้องและมีอยู่ใน path นี้
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], (Controller, JSONModel, Formatter, Filter, FilterOperator) => {
+    "use strict";
 
-	return Controller.extend("ui5.walkthrough.controller.InvoiceList", { 
-		onInit() {
-			const oViewModel = new JSONModel({
-				currency: "EUR"
-			});
-			this.getView().setModel(oViewModel, "view");
-		},
+    return Controller.extend("ui5.walkthrough.controller.InvoiceList", {
+        
+        // เมื่อ Controller ถูกสร้างขึ้น
+        onInit() {
+            // สร้าง view model สำหรับ currency
+            const oViewModel = new JSONModel({
+                currency: "EUR"
+            });
+            this.getView().setModel(oViewModel, "view");
+        },
 
-		onFilterInvoices(oEvent) {
-			// build filter array
-			const aFilter = [];
-			const sQuery = oEvent.getParameter("query");
-			if (sQuery) {
-				aFilter.push(new Filter("ProductName", FilterOperator.Contains, sQuery));
-			}
+        // ฟังก์ชันสำหรับการกรองรายการใบสั่งซื้อ
+        onFilterInvoices(oEvent) {
+            // สร้าง array สำหรับ filter
+            const aFilter = [];
+            const sQuery = oEvent.getParameter("query");
+            if (sQuery) {
+                aFilter.push(new Filter("ProductName", FilterOperator.Contains, sQuery));
+            }
 
-			// filter binding
-			const oList = this.byId("invoiceList");
-			const oBinding = oList.getBinding("items");
-			oBinding.filter(aFilter);
-		}
-	});
+            // การกรอง binding ของ List
+            const oList = this.byId("invoiceList");
+            const oBinding = oList.getBinding("items");
+            oBinding.filter(aFilter);
+        },
+
+        // ฟังก์ชันเมื่อผู้ใช้คลิกที่ ObjectListItem
+        onPress() {
+            // รับ Router จาก Component และทำการนำทางไปยังหน้า "detail"
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("detail");
+        }
+    });
 });
