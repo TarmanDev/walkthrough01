@@ -1,51 +1,59 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/core/routing/History",
-	"sap/m/MessageToast"
-], (Controller, History, MessageToast) => {
+	"sap/m/MessageToast",
+	"sap/ui/model/json/JSONModel"
+], (Controller, History, MessageToast, JSONModel) => {
 	"use strict";
 
 	return Controller.extend("ui5.walkthrough.controller.Detail", {
 
-		// onInit method to set up routing
+		// เมธอด onInit สำหรับการตั้งค่าการนำทางและการตั้งค่า View Model
 		onInit() {
+			// ตั้งค่า view model สำหรับ currency
+			const oViewModel = new JSONModel({
+				currency: "EUR"  // กำหนดค่าเริ่มต้นเป็น "EUR"
+			});
+			this.getView().setModel(oViewModel, "view");
+
+			// ตั้งค่าการนำทางและผูก handler เมื่อมีการจับ pattern ของ route
 			const oRouter = this.getOwnerComponent().getRouter();
 			oRouter.getRoute("detail").attachPatternMatched(this.onObjectMatched, this);
 		},
 
-		// onObjectMatched method for binding the element and resetting the rating control
+		// เมธอด onObjectMatched สำหรับการผูกข้อมูลและการรีเซ็ต Rating Control
 		onObjectMatched(oEvent) {
-			// Reset the rating control when the object is matched
+			// รีเซ็ต Rating Control เมื่อมีการจับคู่กับ Object ใหม่
 			this.byId("rating").reset();
 
-			// Bind the view to the specific invoice data
+			// ผูก view กับข้อมูลใบแจ้งหนี้ (invoice) ที่เลือก
 			this.getView().bindElement({
 				path: "/" + window.decodeURIComponent(oEvent.getParameter("arguments").invoicePath),
 				model: "invoice"
 			});
 		},
 
-		// onNavBack method for navigating back to the previous page or overview
+		// เมธอด onNavBack สำหรับการนำทางกลับไปยังหน้าก่อนหรือหน้า overview
 		onNavBack() {
 			const oHistory = History.getInstance();
 			const sPreviousHash = oHistory.getPreviousHash();
 
-			// Check if there is a previous history entry, if so navigate back
+			// ถ้ามีการบันทึกประวัติการเข้าชมหน้าก่อนหน้านี้ ให้ย้อนกลับ
 			if (sPreviousHash !== undefined) {
 				window.history.go(-1);
 			} else {
-				// Navigate to the overview route if no history
+				// ถ้าไม่มีประวัติ ให้ไปที่ route "overview"
 				const oRouter = this.getOwnerComponent().getRouter();
 				oRouter.navTo("overview", {}, true);
 			}
 		},
 
-		// onRatingChange method to handle rating changes and display a confirmation message
+		// เมธอด onRatingChange สำหรับการจัดการการเปลี่ยนแปลงคะแนนการให้คะแนน
 		onRatingChange(oEvent) {
 			const fValue = oEvent.getParameter("value");
 			const oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
 
-			// Display the confirmation message with the rating value
+			// แสดง MessageToast สำหรับการยืนยันการเปลี่ยนแปลงคะแนน
 			MessageToast.show(oResourceBundle.getText("ratingConfirmation", [fValue]));
 		}
 	});
